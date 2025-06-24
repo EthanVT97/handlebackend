@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>E T H A N V I C T O R 2025</title>
+<style>
+  body {
+    background-color: black;
+    color: #00ff00;
+    font-family: 'Courier New', Courier, monospace;
+    padding: 2rem;
+    overflow: hidden;
+  }
+  #matrix {
+    white-space: pre;
+    font-size: 18px;
+    line-height: 1.2;
+    user-select: none;
+  }
+  .cursor {
+    display: inline-block;
+    width: 10px;
+    background-color: #00ff00;
+    animation: blink 1s infinite;
+    vertical-align: bottom;
+  }
+  @keyframes blink {
+    0%, 50%, 100% { opacity: 1; }
+    25%, 75% { opacity: 0; }
+  }
+</style>
+</head>
+<body>
+<pre id="matrix"></pre>
+<script>
+  const matrixEl = document.getElementById('matrix');
+  const lines = [
+    "V I B E R  B O T  A P I  R U N N I N G  ✅",
+    "Initializing system...",
+    "Establishing secure connection...",
+    "Authenticating...",
+    "Loading modules...",
+    "System online."
+  ];
+  let lineIndex = 0;
+  let charIndex = 0;
+  let currentLine = '';
+
+  function typeWriter() {
+    if (lineIndex < lines.length) {
+      currentLine += lines[lineIndex].charAt(charIndex);
+      matrixEl.textContent = currentLine + "_";
+      charIndex++;
+      if (charIndex === lines[lineIndex].length) {
+        lineIndex++;
+        charIndex = 0;
+        currentLine += '\n';
+      }
+      setTimeout(typeWriter, 100);
+    } else {
+      matrixEl.textContent = currentLine;
+    }
+  }
+  typeWriter();
+</script>
+</body>
+</html>
