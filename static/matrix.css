@@ -1,0 +1,42 @@
+/* matrix.css - Matrix style terminal look */
+
+body {
+  background-color: black;
+  color: #00ff00;
+  font-family: 'Courier New', Courier, monospace;
+  margin: 0;
+  padding: 2rem;
+  overflow: hidden;
+}
+
+#matrix {
+  white-space: pre;
+  font-size: 18px;
+  line-height: 1.2;
+  user-select: none;
+  animation: scroll 20s linear infinite;
+}
+
+.cursor {
+  display: inline-block;
+  width: 10px;
+  height: 18px;
+  background-color: #00ff00;
+  animation: blink 1s infinite;
+  vertical-align: bottom;
+}
+
+@keyframes blink {
+  0%, 50%, 100% { opacity: 1; }
+  25%, 75% { opacity: 0; }
+}
+
+@keyframes scroll {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-50%); }
+}
+
+/* Optional: green glow effect */
+.glow {
+  text-shadow: 0 0 5px #00ff00, 0 0 10px #00ff00;
+}
