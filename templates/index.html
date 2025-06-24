@@ -1,69 +1,426 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>E T H A N V I C T O R 2025</title>
-<style>
-  <link rel="stylesheet" href="/static/matrix.css" />
-  body {
-    background-color: black;
-    color: #00ff00;
-    font-family: 'Courier New', Courier, monospace;
-    padding: 2rem;
-    overflow: hidden;
-  }
-  #matrix {
-    white-space: pre;
-    font-size: 18px;
-    line-height: 1.2;
-    user-select: none;
-  }
-  .cursor {
-    display: inline-block;
-    width: 10px;
-    background-color: #00ff00;
-    animation: blink 1s infinite;
-    vertical-align: bottom;
-  }
-  @keyframes blink {
-    0%, 50%, 100% { opacity: 1; }
-    25%, 75% { opacity: 0; }
-  }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>E T H A N V I C T O R 2025 - SECURE TERMINAL</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;700&display=swap');
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      background: linear-gradient(135deg, #0c0c0c 0%, #1a1a2e 50%, #16213e 100%);
+      color: #00ff41;
+      font-family: 'JetBrains Mono', 'Courier New', monospace;
+      overflow: hidden;
+      height: 100vh;
+      position: relative;
+    }
+    
+    /* Matrix rain effect */
+    .matrix-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      opacity: 0.1;
+    }
+    
+    /* Main terminal container */
+    .terminal {
+      padding: 2rem;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      z-index: 2;
+    }
+    
+    /* Header with glitch effect */
+    .terminal-header {
+      text-align: center;
+      margin-bottom: 2rem;
+      position: relative;
+    }
+    
+    .glitch {
+      font-size: 2.5rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 5px;
+      color: #00ff41;
+      text-shadow: 
+        0 0 10px #00ff41,
+        0 0 20px #00ff41,
+        0 0 40px #00ff41;
+      animation: glitch 2s infinite;
+    }
+    
+    @keyframes glitch {
+      0%, 100% { transform: translate(0); }
+      10% { transform: translate(-2px, -2px); color: #ff0040; }
+      20% { transform: translate(2px, 2px); color: #00ff41; }
+      30% { transform: translate(-2px, 2px); color: #40ff00; }
+      40% { transform: translate(2px, -2px); color: #ff4000; }
+      50% { transform: translate(-2px, -2px); color: #0040ff; }
+      60% { transform: translate(2px, 2px); color: #ff0040; }
+      70% { transform: translate(-2px, 2px); color: #00ff41; }
+      80% { transform: translate(2px, -2px); color: #40ff00; }
+      90% { transform: translate(-2px, -2px); color: #ff4000; }
+    }
+    
+    /* Terminal output area */
+    .terminal-output {
+      flex: 1;
+      overflow-y: auto;
+      background: rgba(0, 0, 0, 0.8);
+      border: 2px solid #00ff41;
+      border-radius: 10px;
+      padding: 1.5rem;
+      box-shadow: 
+        0 0 20px rgba(0, 255, 65, 0.3),
+        inset 0 0 20px rgba(0, 255, 65, 0.1);
+      backdrop-filter: blur(10px);
+    }
+    
+    .terminal-line {
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+    }
+    
+    .prompt {
+      color: #ff0040;
+      margin-right: 10px;
+      font-weight: 700;
+    }
+    
+    .command {
+      color: #00ff41;
+      text-shadow: 0 0 5px #00ff41;
+    }
+    
+    .success {
+      color: #40ff00;
+      text-shadow: 0 0 5px #40ff00;
+    }
+    
+    .warning {
+      color: #ffff00;
+      text-shadow: 0 0 5px #ffff00;
+    }
+    
+    .error {
+      color: #ff4000;
+      text-shadow: 0 0 5px #ff4000;
+    }
+    
+    .info {
+      color: #00ffff;
+      text-shadow: 0 0 5px #00ffff;
+    }
+    
+    /* Cursor animation */
+    .cursor {
+      display: inline-block;
+      width: 12px;
+      height: 20px;
+      background: linear-gradient(90deg, #00ff41, #40ff00);
+      animation: cursor-blink 1s infinite, cursor-glow 2s infinite alternate;
+      margin-left: 5px;
+    }
+    
+    @keyframes cursor-blink {
+      0%, 50% { opacity: 1; }
+      51%, 100% { opacity: 0; }
+    }
+    
+    @keyframes cursor-glow {
+      0% { box-shadow: 0 0 5px #00ff41; }
+      100% { box-shadow: 0 0 15px #00ff41, 0 0 25px #00ff41; }
+    }
+    
+    /* Status indicators */
+    .status-grid {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      z-index: 10;
+    }
+    
+    .status-item {
+      background: rgba(0, 0, 0, 0.8);
+      border: 1px solid #00ff41;
+      border-radius: 5px;
+      padding: 8px 12px;
+      font-size: 0.8rem;
+      text-align: center;
+      backdrop-filter: blur(5px);
+    }
+    
+    .status-online {
+      color: #40ff00;
+      text-shadow: 0 0 5px #40ff00;
+      animation: pulse-green 2s infinite;
+    }
+    
+    .status-secure {
+      color: #00ffff;
+      text-shadow: 0 0 5px #00ffff;
+      animation: pulse-cyan 2s infinite;
+    }
+    
+    @keyframes pulse-green {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.6; }
+    }
+    
+    @keyframes pulse-cyan {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.6; }
+    }
+    
+    /* API endpoints display */
+    .api-tree {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.9rem;
+      line-height: 1.4;
+    }
+    
+    .api-endpoint {
+      color: #00ffff;
+      text-shadow: 0 0 3px #00ffff;
+    }
+    
+    .api-method {
+      color: #ff0040;
+      font-weight: 700;
+      text-shadow: 0 0 3px #ff0040;
+    }
+    
+    /* Scanning animation */
+    .scan-line {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #00ff41, transparent);
+      animation: scan 3s linear infinite;
+      z-index: 5;
+    }
+    
+    @keyframes scan {
+      0% { transform: translateY(0vh); }
+      100% { transform: translateY(100vh); }
+    }
+    
+    /* Binary background */
+    .binary-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -2;
+      opacity: 0.05;
+      font-size: 14px;
+      line-height: 1.2;
+      color: #00ff41;
+      animation: scroll-binary 20s linear infinite;
+    }
+    
+    @keyframes scroll-binary {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(-50%); }
+    }
+  </style>
 </head>
 <body>
-<pre id="matrix"></pre>
-<script>
-  const matrixEl = document.getElementById('matrix');
-  const lines = [
-    "V I B E R  B O T  A P I  R U N N I N G  ✅",
-    "Initializing system...",
-    "Establishing secure connection...",
-    "Authenticating...",
-    "Loading modules...",
-    "System online."
-  ];
-  let lineIndex = 0;
-  let charIndex = 0;
-  let currentLine = '';
+  <!-- Binary background -->
+  <div class="binary-bg" id="binaryBg"></div>
+  
+  <!-- Matrix rain effect -->
+  <canvas class="matrix-bg" id="matrixCanvas"></canvas>
+  
+  <!-- Scanning line -->
+  <div class="scan-line"></div>
+  
+  <!-- Status indicators -->
+  <div class="status-grid">
+    <div class="status-item status-online">ONLINE</div>
+    <div class="status-item status-secure">SECURE</div>
+    <div class="status-item status-online">API</div>
+    <div class="status-item status-secure">ENCRYPTED</div>
+  </div>
+  
+  <div class="terminal">
+    <!-- Header -->
+    <div class="terminal-header">
+      <div class="glitch">ETHAN VICTOR 2025</div>
+      <div style="color: #ff0040; font-size: 1rem; margin-top: 10px; text-shadow: 0 0 5px #ff0040;">
+        ▲ SECURE BACKEND TERMINAL ▲
+      </div>
+    </div>
+    
+    <!-- Terminal output -->
+    <div class="terminal-output">
+      <div id="terminalContent"></div>
+      <div class="terminal-line">
+        <span class="prompt">root@ethanvictor:~#</span>
+        <span class="command" id="currentCommand"></span>
+        <span class="cursor"></span>
+      </div>
+    </div>
+  </div>
 
-  function typeWriter() {
-    if (lineIndex < lines.length) {
-      currentLine += lines[lineIndex].charAt(charIndex);
-      matrixEl.textContent = currentLine + "_";
-      charIndex++;
-      if (charIndex === lines[lineIndex].length) {
-        lineIndex++;
-        charIndex = 0;
-        currentLine += '\n';
+  <script>
+    // Terminal content data
+    const terminalSequence = [
+      { type: 'command', text: 'sudo systemctl start ethan-backend.service', delay: 100 },
+      { type: 'success', text: '✅ FastAPI Backend: INITIALIZED', delay: 500 },
+      { type: 'command', text: 'netstat -tulpn | grep :8000', delay: 200 },
+      { type: 'info', text: '📡 Port 8000: LISTENING', delay: 300 },
+      { type: 'command', text: 'curl -X GET https://api.supabase.co/health', delay: 150 },
+      { type: 'success', text: '🗄️  Supabase Database: CONNECTED', delay: 400 },
+      { type: 'command', text: 'docker ps | grep viber-bot', delay: 180 },
+      { type: 'success', text: '🤖 Viber Bot API: RUNNING', delay: 350 },
+      { type: 'command', text: 'openssl rand -hex 32', delay: 120 },
+      { type: 'info', text: '🔐 Encryption Keys: GENERATED', delay: 300 },
+      { type: 'command', text: 'iptables -L | grep ACCEPT', delay: 200 },
+      { type: 'warning', text: '🛡️  Firewall Rules: ACTIVE', delay: 400 },
+      { type: 'command', text: 'ps aux | grep "uvicorn main:app"', delay: 150 },
+      { type: 'success', text: '⚡ UVICORN Server: OPERATIONAL', delay: 450 },
+      { type: 'info', text: '', delay: 200 },
+      { type: 'info', text: '═══════════════════════════════════════', delay: 50 },
+      { type: 'success', text: '🎯 API ENDPOINTS LOADED:', delay: 300 },
+      { type: 'info', text: '├── 📋 /api/v1/user       [GET, POST]', delay: 100 },
+      { type: 'info', text: '├── 💰 /api/v1/deposit    [POST]', delay: 100 },
+      { type: 'info', text: '├── 💸 /api/v1/withdraw   [POST]', delay: 100 },
+      { type: 'info', text: '├── 📢 /api/v1/broadcast  [POST]', delay: 100 },
+      { type: 'info', text: '├── 📱 /api/v1/phone/{id} [PUT]', delay: 100 },
+      { type: 'info', text: '└── 📎 /api/v1/slip       [POST]', delay: 100 },
+      { type: 'info', text: '', delay: 200 },
+      { type: 'success', text: '🚀 SYSTEM STATUS: ALL SERVICES ONLINE', delay: 500 },
+      { type: 'info', text: '🔒 Security Level: MAXIMUM', delay: 200 },
+      { type: 'success', text: '⚡ Ready to process requests...', delay: 300 },
+      { type: 'command', text: 'tail -f /var/log/access.log', delay: 200 }
+    ];
+
+    // Initialize terminal
+    let currentIndex = 0;
+    let charIndex = 0;
+    let isTyping = false;
+    const terminalContent = document.getElementById('terminalContent');
+    const currentCommand = document.getElementById('currentCommand');
+
+    function addTerminalLine(type, text) {
+      const line = document.createElement('div');
+      line.className = 'terminal-line';
+      
+      const prompt = document.createElement('span');
+      prompt.className = 'prompt';
+      prompt.textContent = 'root@ethanvictor:~# ';
+      
+      const content = document.createElement('span');
+      content.className = type;
+      content.textContent = text;
+      
+      if (type === 'command') {
+        line.appendChild(prompt);
       }
-      setTimeout(typeWriter, 100);
-    } else {
-      matrixEl.textContent = currentLine;
+      line.appendChild(content);
+      
+      terminalContent.appendChild(line);
+      terminalContent.scrollTop = terminalContent.scrollHeight;
     }
-  }
-  typeWriter();
-</script>
+
+    function typeNextSequence() {
+      if (currentIndex >= terminalSequence.length) {
+        currentCommand.textContent = '';
+        return;
+      }
+
+      const current = terminalSequence[currentIndex];
+      
+      setTimeout(() => {
+        addTerminalLine(current.type, current.text);
+        currentIndex++;
+        typeNextSequence();
+      }, current.delay);
+    }
+
+    // Matrix rain effect
+    function initMatrix() {
+      const canvas = document.getElementById('matrixCanvas');
+      const ctx = canvas.getContext('2d');
+      
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      
+      const chars = '0123456789ABCDEFアイウエオカキクケコサシスセソタチツテトナニィヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン';
+      const charArray = chars.split('');
+      const fontSize = 14;
+      const columns = canvas.width / fontSize;
+      const drops = Array(Math.floor(columns)).fill(1);
+      
+      function drawMatrix() {
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        ctx.fillStyle = '#00ff41';
+        ctx.font = `${fontSize}px monospace`;
+        
+        for (let i = 0; i < drops.length; i++) {
+          const char = charArray[Math.floor(Math.random() * charArray.length)];
+          ctx.fillText(char, i * fontSize, drops[i] * fontSize);
+          
+          if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+            drops[i] = 0;
+          }
+          drops[i]++;
+        }
+      }
+      
+      setInterval(drawMatrix, 50);
+    }
+
+    // Binary background generator
+    function generateBinaryBg() {
+      const binaryBg = document.getElementById('binaryBg');
+      let binaryText = '';
+      
+      for (let i = 0; i < 5000; i++) {
+        binaryText += Math.random() > 0.5 ? '1' : '0';
+        if (i % 80 === 0) binaryText += '\n';
+      }
+      
+      binaryBg.textContent = binaryText;
+    }
+
+    // Initialize everything
+    window.addEventListener('load', () => {
+      generateBinaryBg();
+      initMatrix();
+      setTimeout(typeNextSequence, 1000);
+    });
+
+    // Handle window resize
+    window.addEventListener('resize', () => {
+      const canvas = document.getElementById('matrixCanvas');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+  </script>
 </body>
 </html>
