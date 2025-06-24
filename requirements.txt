@@ -3,4 +3,4 @@ uvicorn
 requests
 python-dotenv
 python-multipart
-jinja2           # ✅ for HTML template rendering
+jinja2         # ✅ Required for Jinja2Templates
