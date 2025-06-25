@@ -1,8 +1,9 @@
 fastapi
-uvicorn[standard]
-requests
-python-dotenv
+uvicorn
+sqlalchemy
+psycopg2-binary
+passlib[bcrypt]
+python-jose[cryptography]
 python-multipart
-supabase
-pydantic
-jinja2
+pydantic[email]
++ fastapi-slowapi
