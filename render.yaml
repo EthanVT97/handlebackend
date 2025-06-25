@@ -1,12 +1,10 @@
 services:
   - type: web
-    name: handlebackend
+    name: game-viber-backend
     env: python
     plan: free
-
     buildCommand: "pip install -r requirements.txt"
     startCommand: "uvicorn main:app --host 0.0.0.0 --port $PORT"
-
     envVars:
       - key: SUPABASE_URL
         sync: false
@@ -15,10 +13,6 @@ services:
       - key: SUPABASE_SERVICE_ROLE_KEY
         sync: false
       - key: VIBER_BOT_TOKEN
-        sync: false
-      - key: VIBER_WEBHOOK_URL
-        sync: false
-      - key: JWT_SECRET_KEY
         sync: false
       - key: CORS_ORIGINS
         sync: false
