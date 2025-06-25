@@ -1,3 +1,4 @@
+# requirements.txt
 fastapi
 uvicorn
 sqlalchemy
@@ -6,4 +7,5 @@ passlib[bcrypt]
 python-jose[cryptography]
 python-multipart
 pydantic[email]
-+ fastapi-slowapi
+fastapi-slowapi
+pydantic-settings
