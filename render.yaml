@@ -10,7 +10,19 @@ services:
     envVars:
       - key: SUPABASE_URL
         sync: false
-      - key: SUPABASE_KEY
+      - key: SUPABASE_ANON_KEY
         sync: false
-      - key: CHATBOT_TOKEN
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      - key: VIBER_BOT_TOKEN
+        sync: false
+      - key: VIBER_WEBHOOK_URL
+        sync: false
+      - key: JWT_SECRET_KEY
+        sync: false
+      - key: CORS_ORIGINS
+        sync: false
+      - key: ADMIN_USERNAME
+        sync: false
+      - key: ADMIN_PASSWORD
         sync: false
