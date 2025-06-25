@@ -1,170 +1,292 @@
-🎮 Bot Backend API - Viber + Supabase + Chatrace Integration
+# HandleBackend
 
-This repository powers a lightweight FastAPI backend that handles deposit/withdrawal processing, slip uploads, promo broadcasting, and user phone management — designed for online game bot systems integrated with Viber and Chatrace.
+A FastAPI-based backend service for financial transaction management, user operations, and Viber bot integration with broadcast messaging capabilities.
 
+## 🚀 Features
 
----
+- **User Management**: Registration, authentication, and profile management
+- **Financial Operations**: Secure deposit and withdrawal processing
+- **File Upload**: Payment slip upload and verification
+- **Viber Integration**: Bot control and user registration
+- **Broadcast System**: Message broadcasting to multiple users
+- **Phone Management**: Phone number verification and management
 
-🚀 Features
+## 🛠️ Tech Stack
 
-✅ Deposit & Withdrawal APIs
+- **Framework**: FastAPI
+- **Language**: Python 3.8+
+- **Template Engine**: Jinja2
+- **Environment**: Python-dotenv
+- **External APIs**: ChatRace API for messaging
 
-✅ Upload payment slips to Supabase Storage
+## 📦 Installation
 
-✅ Broadcast promotional messages to Chatrace bot users
+### Prerequisites
+- Python 3.8 or higher
+- pip package manager
 
-✅ User phone number management via Admin Panel
+### Setup
 
-✅ Built with FastAPI and RESTful principles
+1. **Clone the repository**
+```bash
+git clone https://github.com/EthanVT97/handlebackend.git
+cd handlebackend
+```
 
-✅ Easy deployment on Render platform
+2. **Create virtual environment**
+```bash
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+```
 
-
----
-
-🧱 Tech Stack
-
-Component	Description
-
-FastAPI	Modern, fast Python web framework
-Supabase	PostgreSQL database, Auth, Storage
-Chatrace	Messaging Bot Broadcast System
-Render	Cloud hosting with GitHub auto-deploy
-
-
----
-
-📁 API Endpoints
-
-Endpoint	Method	Description
-
-/	GET	Health check / Dashboard homepage
-/api/v1/deposit	POST	Submit deposit with slip image
-/api/v1/withdraw	POST	Submit withdrawal request
-/api/v1/broadcast	POST	Send promo message to bot users
-/api/v1/user	GET	List all users
-/api/v1/user/{id}	PUT	Update user phone number
-/api/v1/slip	POST	Upload slip image to Supabase Storage
-
-
----
-
-⚙️ Environment Variables (.env)
-
-Create .env or .env.example in project root:
-
-SUPABASE_URL=https://your-project.supabase.co
-SUPABASE_ANON_KEY=your-anon-public-key
-SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
-VIBER_BOT_TOKEN=your-viber-bot-token
-CORS_ORIGINS=http://localhost,http://your-frontend.com
-ADMIN_USERNAME=admin
-ADMIN_PASSWORD=supersecretpassword
-
-> 🛡️ Keep your Supabase Service Role key secret!
-
-
-
-
----
-
-📦 Requirements
-
-fastapi
-uvicorn[standard]
-requests
-python-dotenv
-python-multipart
-supabase
-pydantic
-jinja2
-
-Install dependencies:
-
+3. **Install dependencies**
+```bash
 pip install -r requirements.txt
+```
 
+4. **Environment Configuration**
+```bash
+cp .env.example .env
+```
 
----
+Edit `.env` file with your configuration:
+```env
+# API Configuration
+CHATBOT_TOKEN=your_chatrace_api_token
 
-🔃 Render Deployment
+# CORS Configuration
+CORS_ORIGINS=http://localhost:3000,https://yourdomain.com
 
-Example render.yaml file for zero-config deployment:
+# Database Configuration (if applicable)
+DATABASE_URL=your_database_url
 
+# Security
+SECRET_KEY=your_secret_key_here
+```
+
+5. **Create required directories**
+```bash
+mkdir -p static templates
+```
+
+## 🚀 Running the Application
+
+### Development
+```bash
+uvicorn main:app --reload --host 0.0.0.0 --port 8000
+```
+
+### Production
+```bash
+uvicorn main:app --host 0.0.0.0 --port 8000 --workers 4
+```
+
+## 📡 API Endpoints
+
+### User Management
+- `POST /api/v1/user/register` - User registration
+- `POST /api/v1/user/login` - User authentication
+- `GET /api/v1/user/profile` - Get user profile
+
+### Financial Operations
+- `POST /api/v1/deposit/` - Process deposit
+- `POST /api/v1/withdraw/` - Process withdrawal
+- `GET /api/v1/deposit/history` - Deposit history
+- `GET /api/v1/withdraw/history` - Withdrawal history
+
+### File Management
+- `POST /api/v1/slip/upload` - Upload payment slip
+- `GET /api/v1/slip/{slip_id}` - Get slip details
+
+### Viber Integration
+- `POST /api/v1/bot/webhook` - Viber webhook endpoint
+- `POST /api/v1/viber/register` - Register Viber user
+
+### Broadcasting
+- `POST /api/v1/broadcast/` - Send broadcast message
+
+### Phone Management
+- `POST /api/v1/phone/verify` - Verify phone number
+- `GET /api/v1/phone/status` - Check verification status
+
+## 🐳 Docker Deployment
+
+### Build Docker Image
+```bash
+docker build -t handlebackend .
+```
+
+### Run Container
+```bash
+docker run -d \
+  --name handlebackend \
+  -p 8000:8000 \
+  -e CHATBOT_TOKEN=your_token \
+  -e CORS_ORIGINS=https://yourdomain.com \
+  handlebackend
+```
+
+### Docker Compose
+```yaml
+version: '3.8'
 services:
+  backend:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - CHATBOT_TOKEN=${CHATBOT_TOKEN}
+      - CORS_ORIGINS=${CORS_ORIGINS}
+    volumes:
+      - ./static:/app/static
+      - ./templates:/app/templates
+```
 
-type: web
-name: game-viber-backend
-env: python
-plan: free
-buildCommand: "pip install -r requirements.txt"
-startCommand: "uvicorn main:app --host 0.0.0.0 --port $PORT"
-envVars:
+## ☁️ Cloud Deployment
 
-key: SUPABASE_URL
-sync: false
+### Render
+```yaml
+# render.yaml
+services:
+  - type: web
+    name: handlebackend
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: CHATBOT_TOKEN
+        sync: false
+      - key: CORS_ORIGINS
+        value: https://yourapp.onrender.com
+```
 
-key: SUPABASE_ANON_KEY
-sync: false
+## 🔒 Security Features
 
-key: SUPABASE_SERVICE_ROLE_KEY
-sync: false
+- **CORS Protection**: Configurable origin whitelist
+- **Environment Variables**: Sensitive data in .env
+- **Static File Serving**: Secure static file handling
+- **Template Security**: Jinja2 template rendering
 
-key: VIBER_BOT_TOKEN
-sync: false
+## 📁 Project Structure
 
-key: CORS_ORIGINS
-sync: false
+```
+handlebackend/
+├── main.py                 # FastAPI application entry point
+├── routers/               # API route handlers
+│   ├── __init__.py
+│   ├── user_router.py     # User management
+│   ├── deposit_router.py  # Deposit operations
+│   ├── withdraw_router.py # Withdrawal operations
+│   ├── broadcast_router.py # Message broadcasting
+│   ├── phone_router.py    # Phone verification
+│   ├── upload_router.py   # File uploads
+│   ├── viber_bot_router.py # Viber bot control
+│   └── viber_user_register_router.py # Viber registration
+├── static/                # Static files (CSS, JS, images)
+├── templates/             # Jinja2 templates
+├── requirements.txt       # Python dependencies
+├── .env.example          # Environment variables template
+├── Dockerfile            # Docker configuration
+└── README.md             # This file
+```
 
-key: ADMIN_USERNAME
-sync: false
+## 🧪 Testing
 
-key: ADMIN_PASSWORD
-sync: false
+### Run Tests
+```bash
+pytest tests/ -v
+```
 
+### Test Coverage
+```bash
+pytest --cov=. --cov-report=html
+```
 
+### API Testing with curl
+```bash
+# Test broadcast endpoint
+curl -X POST "http://localhost:8000/api/v1/broadcast/" \
+  -H "Content-Type: application/json" \
+  -d '{"message": "Test message", "users": [1, 2, 3]}'
 
+# Test file upload
+curl -X POST "http://localhost:8000/api/v1/slip/upload" \
+  -F "file=@payment_slip.jpg"
+```
+
+## 📊 Monitoring
+
+### Health Check
+```bash
+curl http://localhost:8000/health
+```
+
+### Metrics Endpoint
+```bash
+curl http://localhost:8000/metrics
+```
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## 📋 Requirements.txt
+
+```txt
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+python-multipart==0.0.6
+jinja2==3.1.2
+python-dotenv==1.0.0
+requests==2.31.0
+aiofiles==23.2.1
+```
+
+## 🔧 Development Commands
+
+```bash
+# Install development dependencies
+pip install -r requirements-dev.txt
+
+# Format code
+black .
+isort .
+
+# Lint code
+flake8 .
+pylint **/*.py
+
+# Type checking
+mypy .
+
+# Security scan
+bandit -r .
+```
+
+## 📝 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🆘 Support
+
+- **Issues**: [GitHub Issues](https://github.com/EthanVT97/handlebackend/issues)
+- **Documentation**: [Wiki](https://github.com/EthanVT97/handlebackend/wiki)
+- **Email**: info@ygnb2b.com
+
+## 🔄 Changelog
+
+### v1.0.0 (2024-12-XX)
+- Initial release
+- User management system
+- Financial transaction processing
+- Viber bot integration
+- Broadcast messaging system
+- File upload functionality
 
 ---
 
-🧪 API Usage Examples
-
-Deposit Request
-
-POST /api/v1/deposit
-Content-Type: application/json
-
-{
-"user_id": "12345",
-"amount": 50000,
-"slip_url": "https://supabase.co/storage/.../image.jpg"
-}
-
-Upload Slip Image
-
-POST /api/v1/slip
-Content-Type: multipart/form-data
-
-file: [upload slip image file]
-
-Broadcast Promo Message
-
-POST /api/v1/broadcast
-Content-Type: application/json
-
-{
-"message": "🔥 Weekend Bonus starts now!",
-"users": ["1904720_abc123", "1904720_def456"]
-}
-
-
----
-
-📄 License
-
-This project is MIT licensed for educational and lab use only.
-Do not use for unauthorized automation or production gambling services.
-
-
----
-
-> Built with ❤️ for Myanmar 🇲🇲 developers, by EthanVT97
+⭐ **Star this repository if you find it helpful!**
