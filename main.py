@@ -1,55 +1,30 @@
-import os
-from fastapi import FastAPI, Request
-from fastapi.responses import HTMLResponse
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi.templating import Jinja2Templates
-from fastapi.staticfiles import StaticFiles
-from dotenv import load_dotenv
+# main.py (Fixed)
 
-# Load environment variables from .env
-load_dotenv()
+from fastapi import FastAPI
+from routers import user_router, deposit_router, withdraw_router, slip_router, viber_bot_router
+from database.database import engine
+from models import models
+from fastapi_slowapi import Limiter, _rate_limit_exceeded_handler
+from fastapi_slowapi.util import get_remote_address
+from starlette.requests import Request
 
-# Router imports
-from routers import (
-    user_router,
-    deposit_router,
-    withdraw_router,
-    broadcast_router,
-    phone_router,
-    upload_router,
-    viber_bot_router,
-    viber_user_register_router,
-)
+# Add the rate limiter instance
+limiter = Limiter(key_func=get_remote_address)
+
+models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
-# CORS origins from env or default to localhost
-origins = os.getenv("CORS_ORIGINS", "http://localhost,http://127.0.0.1").split(",")
+# Add state and exception handler for the limiter
+app.state.limiter = limiter
+app.add_exception_handler(_rate_limit_exceeded_handler)
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,  # Use env var for production safety
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+app.include_router(user_router.router, prefix="/api/v1/users", tags=["users"])
+app.include_router(deposit_router.router, prefix="/api/v1/deposits", tags=["deposits"])
+app.include_router(withdraw_router.router, prefix="/api/v1/withdrawals", tags=["withdrawals"])
+app.include_router(slip_router.router, prefix="/api/v1/slips", tags=["slips"])
+app.include_router(viber_bot_router.router, prefix="/api/v1/viber", tags=["viber"])
 
-# Static files and template config
-app.mount("/static", StaticFiles(directory="static"), name="static")
-templates = Jinja2Templates(directory="templates")
-
-# Register routers
-app.include_router(user_router, prefix="/api/v1/user", tags=["User Management"])
-app.include_router(deposit_router, prefix="/api/v1/deposit", tags=["Deposit"])
-app.include_router(withdraw_router, prefix="/api/v1/withdraw", tags=["Withdraw"])
-app.include_router(broadcast_router, prefix="/api/v1/broadcast", tags=["Broadcast"])
-app.include_router(phone_router, prefix="/api/v1/phone", tags=["Phone Management"])
-app.include_router(upload_router, prefix="/api/v1/slip", tags=["Upload Management"])
-
-app.include_router(viber_bot_router, prefix="/api/v1/bot", tags=["Viber Bot Control"])
-app.include_router(viber_user_register_router, prefix="/api/v1/viber", tags=["Viber User Register"])
-
-# Root route with template rendering
-@app.get("/", response_class=HTMLResponse)
-async def root(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request})
+@app.get("/")
+def read_root():
+    return {"message": "Welcome to the Handle Backend API"}
