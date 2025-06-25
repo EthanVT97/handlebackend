@@ -5,7 +5,7 @@ from .deposit_router import router as deposit_router
 from .withdraw_router import router as withdraw_router
 from .broadcast_router import router as broadcast_router  # ✅ Ensure file is named correctly
 from .phone_router import router as phone_router
-from .upload_router import router as upload_router
+from .upload_router import router as slip_router
 
 # ✅ Newly added Viber-related routers
 from .viber_bot_router import router as viber_bot_router
@@ -17,7 +17,7 @@ __all__ = [
     "withdraw_router",
     "broadcast_router",
     "phone_router",
-    "upload_router",
+    "slip_router",
     "viber_bot_router",
     "viber_user_register_router"
 ]
